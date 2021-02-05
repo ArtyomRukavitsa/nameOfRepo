@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect
 from mysql.connector import connect, Error
 from forms import *
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'How long has this been going on?'
