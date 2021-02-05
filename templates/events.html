@@ -1,0 +1,29 @@
+{% extends "baseForEvents.html" %}
+
+{% block content %}
+<h1>Таблица ивентов</h1>
+<a href="/addEvent" class="btn btn-success">Добавить урок</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Описание урока</th>
+      <th scope="col">Время начала</th>
+      <th scope="col">Время окончания</th>
+        <th scope="col">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in events %}
+<tr>
+      <th>{{item[4]}}</th>
+      <td>{{item[2]}}</td>
+      <td>{{item[3]}} </td>
+    <td> <a href="/deleteEvent/{{item[0]}}" class="btn btn-danger">Удалить урок</a>
+     <a href="/updateEvent/{{item[1]}}" class="btn btn-info">Изменить урок</a>
+    </tr>
+{% endfor %}
+
+  </tbody>
+</table>
+
+{% endblock %}
