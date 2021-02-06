@@ -37,6 +37,7 @@ def code():
     result = cursor.fetchall()
     for row in result:
         print(row)
+    cursor.close()
     return render_template("events.html", events=result)
 
 
@@ -55,6 +56,7 @@ def deleteEvent(id):
     result = cursor.fetchall()
     for row in result:
         print(row)
+    cursor.close()
     return redirect('/events')
 
 
@@ -82,6 +84,7 @@ def addEvent():
         cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s)",
                        (lastID + 1, lastID + 1, start_time, end_time, description, form.choices.data[0], ))
         connection.commit()
+        cursor.close()
         return redirect('/events')
 
     return render_template('addEvent.html', title='Добавление ивента', form=form)
@@ -96,6 +99,7 @@ def eventsByDay(id):
     result = cursor.fetchall()
     for row in result:
         print(row)
+    cursor.close()
     return render_template("events.html", events=result, day=days[id])
 
 
