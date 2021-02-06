@@ -61,18 +61,26 @@ def deleteEvent(id):
 @app.route('/addEvent', methods=['GET', 'POST'])
 def addEvent():
     form = AddEventForm()
+    form.choices.choices = [[1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
+                            [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота']]
     if form.validate_on_submit():
         description = form.description.data
         start_time = form.start_time.data
         end_time = form.end_time.data
-
-
+        if len(form.choices.data) != 1:
+            form.description.data = description
+            form.start_time.data = start_time
+            form.end_time.data = end_time
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы выбрали больше одного дня!',
+                                   form=form)
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM schedule")
         lastID = cursor.fetchall()[-1]['idschedule']
 
-        cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s)",
-                       (lastID + 1, lastID + 1, start_time, end_time, description, ))
+        cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s)",
+                       (lastID + 1, lastID + 1, start_time, end_time, description, form.choices.data[0], ))
         connection.commit()
         return redirect('/events')
 
@@ -82,14 +90,13 @@ def addEvent():
 @app.route('/eventsByDay/<int:id>', methods=['GET', 'POST'])
 def eventsByDay(id):
     days = [None, 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
-    show_table_query = "SELECT * FROM schedule"
+    show_table_query = "SELECT * FROM schedule WHERE day=%s"
     cursor = connection.cursor()
-    cursor.execute(show_table_query)
+    cursor.execute(show_table_query, (id, ))
     result = cursor.fetchall()
     for row in result:
         print(row)
     return render_template("events.html", events=result, day=days[id])
-
 
 
 if __name__ == '__main__':

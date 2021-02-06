@@ -1,7 +1,6 @@
 h1
 {
     color: black;
-    font-family: "Arial Black";
 }
 
 h5
@@ -23,6 +22,11 @@ li
 }
 
 p
+{
+    color: #000000
+}
+
+div
 {
     color: #000000
 }

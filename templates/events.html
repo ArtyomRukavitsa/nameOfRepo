@@ -3,6 +3,7 @@
 {% block content %}
 <h1>Таблица ивентов</h1>
 <h1>{{ day }}</h1>
+{% set days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'] %}
 <a href="/addEvent" class="btn btn-success">Добавить урок</a>
 <table class="table">
   <thead>
@@ -10,6 +11,7 @@
       <th scope="col">Описание урока</th>
       <th scope="col">Время начала</th>
       <th scope="col">Время окончания</th>
+        <th scope="col">День недели</th>
         <th scope="col">Действия</th>
     </tr>
   </thead>
@@ -19,6 +21,7 @@
       <th>{{item["description"]}}</th>
       <td>{{item["startTime"]}}</td>
       <td>{{item["endTime"]}} </td>
+     <td>{{days[item["day"] - 1]}} </td>
     <td> <a href="/deleteEvent/{{item['idschedule']}}" class="btn btn-danger">Удалить урок</a>
      <a href="/updateEvent/{{item['idschedule']}}" class="btn btn-info">Изменить урок</a>
     </tr>

@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>Добавление книги</h1>
+<h1>{{message}}</h1>
 <form class="login_form" method="post" enctype="multipart/form-data">
     <div class="form-group">
     {{ form.hidden_tag() }}
@@ -33,8 +34,22 @@
             </p>
         {% endfor %}
     </p>
+         <p> {% if form.choices.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.choices.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% for choice in form.choices %}
+                    <div class="form-check">
+                        {{ choice(class="form-check-input") }}
+                        {{ choice.label(class="form-check-label") }}
+                    </div>
+                {% endfor %}
+    </p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
+
     </div>
 </form>
 {% endblock %}
