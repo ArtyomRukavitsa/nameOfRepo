@@ -48,6 +48,53 @@ def deleteEvent(id):
     return redirect('/events')
 
 
+@app.route('/changeEvent/<int:id>', methods=['GET', 'POST'])
+def changeEvent(id):
+    form = AddEventForm()
+    form.choices.choices = [[1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
+                            [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота'], [7, 'Воскресенье']]
+    if form.validate_on_submit():
+        description = form.description.data
+        start_time = form.start_time.data
+        end_time = form.end_time.data
+        classroom = form.classroom.data
+        if len(form.choices.data) == 0:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы не выбрали день недели!',
+                                   form=form)
+        if len(form.choices.data) > 1:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы выбрали больше одного дня дня!',
+                                   form=form)
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM schedule")
+        lastID = cursor.fetchall()[-1]['idschedule']
+
+        cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s)",
+                       (lastID + 1, classroom, start_time, end_time, description, form.choices.data[0],))
+        connection.commit()
+        cursor.close()
+        return redirect('/events')
+
+    deleteQuery = f"UPDATE schedule SET idschedule=%s"
+    cursor = connection.cursor()
+    print(id)
+
+    cursor.execute(deleteQuery, (id,))
+    connection.commit()
+
+    show_table_query = "SELECT * FROM schedule"
+    cursor = connection.cursor()
+    cursor.execute(show_table_query)
+    result = cursor.fetchall()
+    for row in result:
+        print(row)
+    cursor.close()
+    return redirect('/events')
+
+
 @app.route('/addEvent', methods=['GET', 'POST'])
 def addEvent():
     form = AddEventForm()
@@ -97,6 +144,6 @@ def eventsByDay(id):
 
 
 if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 5000))
-    #app.run(host='0.0.0.0', port=port)
-    app.run(port=8080, host='127.0.0.1')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+    #app.run(port=8080, host='127.0.0.1')
