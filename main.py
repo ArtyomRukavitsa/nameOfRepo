@@ -57,6 +57,7 @@ def addEvent():
         description = form.description.data
         start_time = form.start_time.data
         end_time = form.end_time.data
+        classroom = form.classroom.data
         if len(form.choices.data) == 0:
             return render_template('addEvent.html',
                                    title='Добавление ивента',
@@ -72,7 +73,7 @@ def addEvent():
         lastID = cursor.fetchall()[-1]['idschedule']
 
         cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s)",
-                       (lastID + 1, lastID + 1, start_time, end_time, description, form.choices.data[0], ))
+                       (lastID + 1, classroom, start_time, end_time, description, form.choices.data[0], ))
         connection.commit()
         cursor.close()
         return redirect('/events')
@@ -96,6 +97,6 @@ def eventsByDay(id):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-    #app.run(port=8080, host='127.0.0.1')
+    #port = int(os.environ.get("PORT", 5000))
+    #app.run(host='0.0.0.0', port=port)
+    app.run(port=8080, host='127.0.0.1')

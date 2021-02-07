@@ -12,6 +12,7 @@
       <th scope="col">Время начала</th>
       <th scope="col">Время окончания</th>
         <th scope="col">День недели</th>
+        <th scope="col">Аудитория</th>
         <th scope="col">Действия</th>
     </tr>
   </thead>
@@ -22,6 +23,7 @@
       <td>{{item["startTime"]}}</td>
       <td>{{item["endTime"]}} </td>
      <td>{{days[item["day"] - 1]}} </td>
+    <td>{{item["id"]}} </td>
     <td> <a href="/deleteEvent/{{item['idschedule']}}" class="btn btn-danger">Удалить урок</a>
      <a href="/updateEvent/{{item['idschedule']}}" class="btn btn-info">Изменить урок</a>
     </tr>

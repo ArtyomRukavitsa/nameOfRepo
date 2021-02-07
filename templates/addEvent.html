@@ -33,6 +33,14 @@
                 {{ error }}
             </p>
         {% endfor %}
+        <p>
+        {{ form.classroom.label }}<br>
+        {{ form.classroom(class="form-control") }}<br>
+        {% for error in form.classroom.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
     </p>
          <p> {% if form.choices.errors %}
                 <div class="invalid-feedback">
