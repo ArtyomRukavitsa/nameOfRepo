@@ -4,7 +4,9 @@
 <h1>Таблица ивентов</h1>
 <h1>{{ day }}</h1>
 {% set days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'] %}
+ {% if current_user.is_authenticated %}
 <a href="/addEvent" class="btn btn-success">Добавить урок</a>
+{% endif %}
 <table class="table">
   <thead>
     <tr>
