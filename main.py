@@ -1,10 +1,13 @@
 from flask import Flask, render_template, redirect, request
+from flask_login import LoginManager, login_user, UserMixin, login_required, logout_user
 from forms import *
 import pymysql
 import datetime
 import os
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'How long has this been going on?'
 connection = pymysql.connect(host='remotemysql.com',
                              user='JiQRuMfhFj',
@@ -12,6 +15,34 @@ connection = pymysql.connect(host='remotemysql.com',
                              database='JiQRuMfhFj',
                              cursorclass=pymysql.cursors.DictCursor)
 
+class User(UserMixin):
+    id = 1
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.password.data == 'admin' and form.username.data == 'admin':
+            user = User()
+            login_user(user)
+            return redirect("/")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login.html', title='Авторизация', form=form)
+
+@login_manager.user_loader
+def load_user(user_id):
+    #session = db_session.create_session()
+    return User()
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    """ Выход """
+    logout_user()
+    return redirect("/")
 
 @app.route('/')
 def main():
@@ -86,6 +117,11 @@ def updateEvent(id):
 
 @app.route('/addEvent', methods=['GET', 'POST'])
 def addEvent():
+    """
+    1) проверка на то, что первое время должно быть меньше второго
+    2) временной интервал
+    3) добавить примеры, как заполнять время начала и конца
+    """
     form = AddEventForm()
     form.choices.choices = [[1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
                             [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота'], [7, 'Воскресенье']]
@@ -94,7 +130,6 @@ def addEvent():
         start_time = form.start_time.data
         end_time = form.end_time.data
         classroom = form.classroom.data
-        """проверка на то, что первое время должно быть меньше второго"""
         if len(form.choices.data) == 0:
             return render_template('addEvent.html',
                                    title='Добавление ивента',
