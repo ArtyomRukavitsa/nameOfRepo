@@ -130,6 +130,12 @@ def addEvent():
         start_time = form.start_time.data
         end_time = form.end_time.data
         classroom = form.classroom.data
+        if start_time >= end_time:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Время начала ивента меньше времени конца ивента!',
+                                   form=form,
+                                   action='Добавление')
         if len(form.choices.data) == 0:
             return render_template('addEvent.html',
                                    title='Добавление ивента',
@@ -175,6 +181,6 @@ def eventsByDay(id):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-    #app.run(port=8080, host='127.0.0.1')
+    #port = int(os.environ.get("PORT", 5000))
+    #app.run(host='0.0.0.0', port=port)
+    app.run(port=8080, host='127.0.0.1')
