@@ -10,8 +10,8 @@ class MultiCheckboxField(SelectMultipleField):
 
 class AddEventForm(FlaskForm):
     description = StringField('Описание урока', validators=[DataRequired()])
-    start_time = TimeField('Время начала урока', validators=[DataRequired()])
-    end_time = TimeField('Время окончания урока', validators=[DataRequired()])
+    start_time = TimeField('Время начала урока. Пример: 12:00', validators=[DataRequired()])
+    end_time = TimeField('Время окончания урока. Пример: 13:00', validators=[DataRequired()])
     classroom = IntegerField('Аудитория', validators=[DataRequired()])
     choices = MultiCheckboxField('День недели', coerce=int)
     submit = SubmitField('Подвтердить')

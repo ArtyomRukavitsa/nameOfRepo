@@ -117,11 +117,6 @@ def updateEvent(id):
 
 @app.route('/addEvent', methods=['GET', 'POST'])
 def addEvent():
-    """
-    1) проверка на то, что первое время должно быть меньше второго
-    2) временной интервал
-    3) добавить примеры, как заполнять время начала и конца
-    """
     form = AddEventForm()
     form.choices.choices = [[1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
                             [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота'], [7, 'Воскресенье']]
@@ -130,10 +125,18 @@ def addEvent():
         start_time = form.start_time.data
         end_time = form.end_time.data
         classroom = form.classroom.data
+        morning = datetime.time(8, 0, 0)  # Восемь утра
+        evening = datetime.time(20, 0, 0)  # Восемь вечера
+        if start_time > evening or start_time < morning or end_time > evening or end_time < morning:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Ивент может проходить только в дневное время: с 8:00 до 20:00!',
+                                   form=form,
+                                   action='Добавление')
         if start_time >= end_time:
             return render_template('addEvent.html',
                                    title='Добавление ивента',
-                                   message='Время начала ивента меньше времени конца ивента!',
+                                   message='Время начала ивента меньше или равно времени конца ивента!',
                                    form=form,
                                    action='Добавление')
         if len(form.choices.data) == 0:
@@ -181,6 +184,6 @@ def eventsByDay(id):
 
 
 if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 5000))
-    #app.run(host='0.0.0.0', port=port)
-    app.run(port=8080, host='127.0.0.1')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+    # app.run(port=8080, host='127.0.0.1')
