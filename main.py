@@ -156,8 +156,8 @@ def updateEvent(id):
                                      str(form.end_time.data),
                                      form.description.data,
                                      form.choices.data[0],
-                                     id,
                                      form.numbOfAni.data,
+                                     id,
                                      ))
         connection.commit()
         cursor.close()
@@ -226,7 +226,7 @@ def addEvent():
             lastID = 1
 
         cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s, %s)",
-                       (lastID + 1, classroom, start_time, end_time, description, form.choices.data[0], number, ))
+                       (lastID + 1, classroom, start_time, end_time, description, number, form.choices.data[0], ))
         connection.commit()
         cursor.close()
         print('ААААААААААААААААААААААА')
