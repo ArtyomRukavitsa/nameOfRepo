@@ -42,7 +42,14 @@
             </p>
         {% endfor %}
     </p>
-        {{ form.numbOfAni.label }}<br>
+        <p>Номер анимации<br/>
+            1. Алгебра <span style="padding-left:3.4em"> 2. Английский язык </span><br/>
+            3. Биология  <span style="padding-left:2.8em"> 4. География<br/> </span>
+            5. Геометрия  <span style="padding-left:2.25em">   6. История<br/></span>
+            7. Информатика   <span style="padding-left:0.8em">  8. Литература<br/></span>
+            9. ОБЖ      <span style="padding-left:4.9em">        10. Обществознание<br/></span>
+            11. Русский язык   <span style="padding-left:0.55em"> 12. Физика<br/></span>
+            13. Физкультура  <span style="padding-left:0.9em">   14. Химия</span></p><br>
         {{ form.numbOfAni(class="form-control") }}<br>
         {% for error in form.numbOfAni.errors %}
             <p class="alert alert-danger" role="alert">
