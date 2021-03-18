@@ -15,7 +15,7 @@ class AddEventForm(FlaskForm):
     classroom = IntegerField('Аудитория', validators=[DataRequired()])
     numbOfAni = IntegerField('Номер анимации', validators=[DataRequired()])
     choices = MultiCheckboxField('День недели', coerce=int)
-    submit = SubmitField('Подвтердить')
+    submit = SubmitField('Подтвердить')
 
 
 class LoginForm(FlaskForm):
