@@ -13,6 +13,7 @@ class AddEventForm(FlaskForm):
     start_time = TimeField('Время начала урока. Пример: 12:00', validators=[DataRequired()])
     end_time = TimeField('Время окончания урока. Пример: 13:00', validators=[DataRequired()])
     classroom = IntegerField('Аудитория', validators=[DataRequired()])
+    numbOfAni = IntegerField('Номер анимации', validators=[DataRequired()])
     choices = MultiCheckboxField('День недели', coerce=int)
     submit = SubmitField('Подвтердить')
 

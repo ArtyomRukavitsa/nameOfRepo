@@ -42,6 +42,16 @@
             </p>
         {% endfor %}
     </p>
+        {{ form.numbOfAni.label }}<br>
+        {{ form.numbOfAni(class="form-control") }}<br>
+         <p> {% if form.numbOfAni.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.numbOfAni.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
          <p> {% if form.choices.errors %}
                 <div class="invalid-feedback">
                     {% for error in form.choices.errors %}

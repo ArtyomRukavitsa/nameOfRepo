@@ -55,8 +55,8 @@ def code():
     cursor = connection.cursor()
     cursor.execute(show_table_query)
     result = cursor.fetchall()
-    for row in result:
-        print(row)
+    #for row in result:
+     #   print(row)
     cursor.close()
     return render_template("events.html", events=result, title='Список ивентов | fowtic')
 
@@ -99,6 +99,7 @@ def updateEvent(id):
         form.start_time.data = datetime.datetime.strptime(result['startTime'], '%H:%M:%S')
         form.description.data = result['description']
         form.choices.data = arr[result['day']]
+        form.numbOfAni.data = result['animation']
 
     if form.validate_on_submit():
         morning = datetime.time(8, 0, 0)  # Восемь утра
@@ -130,6 +131,20 @@ def updateEvent(id):
                                    form=form,
                                    action='Обновление'
                                    )
+        if form.numbOfAni.data < 0:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы выбрали неверный номер анимации!',
+                                   form=form,
+                                   action='Обновление'
+                                   )
+        if form.classroom.data < 0:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Номер аудитории не может быть неотрицательным числом!',
+                                   form=form,
+                                   action='Обновление'
+                                   )
         deleteQuery = f"UPDATE schedule SET id=%s, startTime=%s, endTime=%s, " \
                       f"description=%s, day=%s WHERE idschedule=%s"
         cursor = connection.cursor()
@@ -138,7 +153,10 @@ def updateEvent(id):
                                      str(form.end_time.data),
                                      form.description.data,
                                      form.choices.data[0],
-                                     id))
+                                     id,
+                                     form.numbOfAni.data,
+                                     ))
+        print('FFFFFFFFFFFFFFFFFFFFFFFF')
         connection.commit()
         cursor.close()
         return redirect('/events')
@@ -155,6 +173,7 @@ def addEvent():
         start_time = form.start_time.data
         end_time = form.end_time.data
         classroom = form.classroom.data
+        number = form.numbOfAni.data
         morning = datetime.time(8, 0, 0)  # Восемь утра
         evening = datetime.time(20, 0, 0)  # Восемь вечера
         if start_time > evening or start_time < morning or end_time > evening or end_time < morning:
@@ -182,6 +201,20 @@ def addEvent():
                                    form=form,
                                    action='Добавление'
                                    )
+        if number < 0:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы выбрали неверный номер анимации!',
+                                   form=form,
+                                   action='Добавление'
+                                   )
+        if classroom < 0:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Номер аудитории не может быть неотрицательным числом!',
+                                   form=form,
+                                   action='Добавление'
+                                   )
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM schedule")
         try:
@@ -189,10 +222,11 @@ def addEvent():
         except IndexError:
             lastID = 1
 
-        cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s)",
-                       (lastID + 1, classroom, start_time, end_time, description, form.choices.data[0], ))
+        cursor.execute("INSERT INTO schedule VALUES(%s, %s, %s, %s, %s, %s, %s)",
+                       (lastID + 1, classroom, start_time, end_time, description, form.choices.data[0], number, ))
         connection.commit()
         cursor.close()
+        print('ААААААААААААААААААААААА')
         return redirect('/events')
 
     return render_template('addEvent.html', title='Добавление ивента | fowtic', form=form, action='Добавление')
@@ -214,6 +248,6 @@ def eventsByDay(id):
 
 
 if __name__ == '__main__':
-    # port = int(os.environ.get("PORT", 5000))
-    # app.run(host='0.0.0.0', port=port)
-    app.run(port=8080, host='127.0.0.1')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+    # app.run(port=8080, host='127.0.0.1')

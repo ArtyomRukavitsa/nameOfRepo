@@ -15,6 +15,7 @@
       <th scope="col">Время окончания</th>
         <th scope="col">День недели</th>
         <th scope="col">Аудитория</th>
+        <th scope="col">Номер анимации</th>
         {% if current_user.is_authenticated %}
         <th scope="col">Действия</th>
         {% endif %}
@@ -28,6 +29,7 @@
       <td>{{item["endTime"]}} </td>
      <td>{{days[item["day"] - 1]}} </td>
     <td>{{item["id"]}} </td>
+    <td>{{item["animation"]}} </td>
     {% if current_user.is_authenticated %}
     <td> <a href="/deleteEvent/{{item['idschedule']}}" class="btn btn-danger">Удалить урок</a>
      <a href="/updateEvent/{{item['idschedule']}}" class="btn btn-info">Изменить урок</a>
