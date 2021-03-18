@@ -134,7 +134,7 @@ def updateEvent(id):
                                    form=form,
                                    action='Обновление'
                                    )
-        if form.numbOfAni.data < 0:
+        if form.numbOfAni.data < 1 or form.numbOfAni.data > 14:
             return render_template('addEvent.html',
                                    title='Добавление ивента',
                                    message='Вы выбрали неверный номер анимации!',
@@ -204,7 +204,7 @@ def addEvent():
                                    form=form,
                                    action='Добавление'
                                    )
-        if number < 0:
+        if number < 1 or number > 14:
             return render_template('addEvent.html',
                                    title='Добавление ивента',
                                    message='Вы выбрали неверный номер анимации!',
