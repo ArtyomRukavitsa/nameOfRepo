@@ -93,13 +93,43 @@ def updateEvent(id):
         cursor.execute(show_table_query, (id, ))
         result = cursor.fetchone()
         cursor.close()
-        print(result)
+        #print(result)
         form.classroom.data = result['id']
         form.end_time.data = datetime.datetime.strptime(result['endTime'], '%H:%M:%S')
         form.start_time.data = datetime.datetime.strptime(result['startTime'], '%H:%M:%S')
         form.description.data = result['description']
         form.choices.data = arr[result['day']]
+
     if form.validate_on_submit():
+        morning = datetime.time(8, 0, 0)  # Восемь утра
+        evening = datetime.time(20, 0, 0)   # Восемь вечера
+        print(type(form.start_time.data), type(morning))
+        if form.start_time.data > evening or form.end_time.data < morning or \
+                form.end_time.data > evening or form.start_time.data < morning:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Ивент может проходить только в дневное время: с 8:00 до 20:00!',
+                                   form=form,
+                                   action='Обновление')
+        if form.start_time.data >= form.end_time.data:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Время начала ивента меньше или равно времени конца ивента!',
+                                   form=form,
+                                   action='Обновление')
+        if len(form.choices.data) == 0:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы не выбрали день недели!',
+                                   form=form,
+                                   action='Обновление')
+        if len(form.choices.data) > 1:
+            return render_template('addEvent.html',
+                                   title='Добавление ивента',
+                                   message='Вы выбрали больше одного дня дня!',
+                                   form=form,
+                                   action='Обновление'
+                                   )
         deleteQuery = f"UPDATE schedule SET id=%s, startTime=%s, endTime=%s, " \
                       f"description=%s, day=%s WHERE idschedule=%s"
         cursor = connection.cursor()
@@ -184,6 +214,6 @@ def eventsByDay(id):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-    # app.run(port=8080, host='127.0.0.1')
+    # port = int(os.environ.get("PORT", 5000))
+    # app.run(host='0.0.0.0', port=port)
+    app.run(port=8080, host='127.0.0.1')
