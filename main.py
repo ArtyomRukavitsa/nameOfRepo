@@ -15,8 +15,10 @@ connection = pymysql.connect(host='remotemysql.com',
                              database='JiQRuMfhFj',
                              cursorclass=pymysql.cursors.DictCursor)
 
+
 class User(UserMixin):
     id = 1
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -31,9 +33,9 @@ def login():
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
+
 @login_manager.user_loader
 def load_user(user_id):
-    #session = db_session.create_session()
     return User()
 
 
@@ -43,6 +45,7 @@ def logout():
     """ Выход """
     logout_user()
     return redirect("/")
+
 
 @app.route('/')
 def main():
@@ -55,8 +58,6 @@ def code():
     cursor = connection.cursor()
     cursor.execute(show_table_query)
     result = cursor.fetchall()
-    #for row in result:
-     #   print(row)
     cursor.close()
     return render_template("events.html", events=result, title='Список ивентов | fowtic')
 
@@ -65,17 +66,12 @@ def code():
 def deleteEvent(id):
     deleteQuery = f"DELETE FROM schedule WHERE idschedule=%s"
     cursor = connection.cursor()
-    print(id)
-
     cursor.execute(deleteQuery, (id,))
     connection.commit()
-
     show_table_query = "SELECT * FROM schedule"
     cursor = connection.cursor()
     cursor.execute(show_table_query)
     result = cursor.fetchall()
-    for row in result:
-        print(row)
     cursor.close()
     return redirect('/events')
 
@@ -85,9 +81,8 @@ def updateEvent(id):
     form = AddEventForm()
     form.choices.choices = [[1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
                             [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота'], [7, 'Воскресенье']]
-    arr = [[7, 'Воскресенье'], [1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
-                            [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота']]
-    st, et = 0, 0
+    arr = [None, [1, 'Понедельник'], [2, 'Вторник'], [3, 'Среда'],
+                            [4, 'Четверг'], [5, 'Пятница'], [6, 'Суббота'], [7, 'Воскресенье']]
     morning = datetime.time(8, 0, 0)  # Восемь утра
     evening = datetime.time(20, 0, 0)  # Восемь вечера
     if request.method == "GET":
@@ -95,18 +90,13 @@ def updateEvent(id):
         cursor = connection.cursor()
         cursor.execute(show_table_query, (id, ))
         result = cursor.fetchone()
-        print('aaaaaaaaaaaaaassssssssssssssssssa')
         cursor.close()
-        #print(result)
-        print('привет!!!!!!!!!!!!!!')
         form.classroom.data = result['id']
         form.end_time.data = datetime.datetime.strptime(result['endTime'], '%H:%M:%S')
         form.start_time.data = datetime.datetime.strptime(result['startTime'], '%H:%M:%S')
         form.description.data = result['description']
         form.choices.data = arr[result['day']]
         form.numbOfAni.data = result['animation']
-        print(type(form.start_time.data), type(morning))
-
     if form.validate_on_submit():
         if form.end_time.data > evening or form.end_time.data < morning or \
                 form.start_time.data > evening or form.start_time.data < morning:
@@ -161,7 +151,6 @@ def updateEvent(id):
                                      ))
         connection.commit()
         cursor.close()
-        print('what the fuck', form.numbOfAni.data)
         return redirect('/events')
     return render_template('addEvent.html', title='Изменение ивента | fowtic', form=form, action='Изменение')
 
@@ -229,7 +218,6 @@ def addEvent():
                        (lastID + 1, classroom, start_time, end_time, description, form.choices.data[0], number, ))
         connection.commit()
         cursor.close()
-        print('ААААААААААААААААААААААА')
         return redirect('/events')
 
     return render_template('addEvent.html', title='Добавление ивента | fowtic', form=form, action='Добавление')
@@ -244,8 +232,6 @@ def eventsByDay(id):
     cursor = connection.cursor()
     cursor.execute(show_table_query, (id, ))
     result = cursor.fetchall()
-    for row in result:
-        print(row)
     cursor.close()
     return render_template("events.html", events=result, day=days[id], title=f'Расписание на {cases[id]} | fowtic')
 
